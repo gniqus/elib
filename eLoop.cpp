@@ -53,13 +53,13 @@ void eLoop::dispatcher(int flags) {
 
     rfd2mask_.clear();
 
-    const timeEvent *te = &time_events_.top();
-    while (!time_events_.empty() && mstime() >= te->when) {
-        int r = te->proc(te->procParam);
-        if (APERIODIC == te->proc(te->procParam)) {
-            time_events_.pop();
-        } else {
-            te->when += r;
+    timeEvent te = time_events_.top();
+    while (!time_events_.empty() && mstime() >= te.when) {
+        int r = te.proc(te.procParam);
+        time_events_.pop();
+        if (APERIODIC != r) {
+            time_events_.emplace(te.when + r, te.proc, te.procParam);
         }
+        te = time_events_.top();
     }
 }

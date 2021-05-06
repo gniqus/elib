@@ -71,13 +71,14 @@ private:
     virtual void delEvent(int fd, int mask);
     virtual void wait(int64_t ms);
 
-public:
+protected:
     int maxfd;
     std::vector<fileEvent> file_events_;
     std::unordered_map<int, int> rfd2mask_;
 
+public:
     typedef void fileProc(void *procParam);
-    typedef void timeProc(void *procParam);
+    typedef int timeProc(void *procParam);
 
     eLoop(int setsize);
     ~eLoop();
